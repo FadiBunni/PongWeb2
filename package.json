@@ -1,0 +1,17 @@
+{
+  "name": "pongweb1",
+  "version": "1.0.0",
+  "description": "My first multiplayer game",
+  "main": "app.js",
+  "scripts": {
+    "build": "watchify client/js/game.js -o client/js/bundle/bundle.js"
+  },
+  "author": "Fadi Bunni",
+  "license": "ISC",
+  "dependencies": {
+    "browserify": "^13.1.0",
+    "express": "^4.14.0",
+    "nodemon": "^1.11.0",
+    "socket.io": "^1.7.2"
+  }
+}
