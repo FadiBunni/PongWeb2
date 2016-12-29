@@ -6,6 +6,7 @@ var Player = function(id, side){
     self.pressingUp = false;
     self.pressingDown = false;
     self.maxSpd = 10;
+    self.side = side;
     self.style = side == "left" ? "red" : "blue";
     self.sizeLength = 140;
     self.sizeWidth = 25;
@@ -26,11 +27,24 @@ var Player = function(id, side){
             self.spdY = 0;
     }
 
+    self.sideCollision = function() {
+        //create a list with constants and input them here - this is bad practice.
+        var w = 600, h = 400;
+        if(self.y < 0 ){
+            self.y = 0;
+        }else if(self.y > h - self.sizeLength){
+             self.y = h - self.sizeLength;
+        }
+    }
+
     self.getInitPack = function() {
         return {
             id:self.id,
             x:self.x,
             y:self.y,
+            sizeLength:self.sizeLength,
+            sizeWidth:self.sizeWidth,
+            side:self.style,
             number:self.number
         };
     }
@@ -39,8 +53,7 @@ var Player = function(id, side){
         return {
             id:self.id,
             x:self.x,
-            y:self.y,
-            side:self.style
+            y:self.y
         };
     }
 

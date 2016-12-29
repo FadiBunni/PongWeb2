@@ -29,7 +29,6 @@ Player.onConnect = function (socket) {
             player.pressingDown = data.state;
     });
 
-
     socket.emit('init',{
         player:Player.getAllInitPack(),
     });
@@ -52,12 +51,12 @@ Player.update = function(){
     for(var i in Player.list){
         var player = Player.list[i];
         player.update();
+        player.sideCollision();
         pack.push(player.getUpdatePack());
     }
     return pack;
 }
 
-var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket){
     socket.id = Math.random();
     SOCKET_LIST[socket.id] = socket;
@@ -86,4 +85,4 @@ setInterval(function(){
     }
     initPack.player = [];
     removePack.player = [];
-},1000/25);
+},1000/100);

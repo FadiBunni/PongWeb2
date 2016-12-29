@@ -1,12 +1,10 @@
 var cUtils = require('./utils/utils.canvas.js');
 var Player = require('./entities/player.js');
 
-var w = window.innerWidth;
-var h = window.innerHeight;
+var w = 600, h = 400;
 
 var canvas = cUtils.generateCanvas(w, h);
 var ctx = canvas.getContext('2d');
-
 
 var socket = io();
 
@@ -38,8 +36,13 @@ socket.on('remove', function(data){
 
 setInterval(function(){
     ctx.clearRect(0,0,w,h);
-    for(var i in Player.list)
-        ctx.fillText(Player.list[i].number, Player.list[i].x, Player.list[i].y);
+    ctx.fillStyle = "black";
+    ctx.fillRect(0,0,w,h);
+    for(var i in Player.list){
+        ctx.fillStyle = "red";
+        ctx.fillRect(Player.list[i].x, Player.list[i].y, Player.list[i].sizeWidth, Player.list[i].sizeLength);
+    }
+
 },40);
 
 document.onkeydown = function(event){

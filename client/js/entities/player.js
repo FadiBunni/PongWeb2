@@ -4,6 +4,8 @@ var Player = function(initPack) {
 	self.number = initPack.number;
 	self.x = initPack.x;
 	self.y = initPack.y;
+	self.sizeLength = initPack.sizeLength;
+	self.sizeWidth = initPack.sizeWidth;
 
 
 	// self.draw = function() {
