@@ -44,7 +44,7 @@ var Player = function(id, side){
             y:self.y,
             sizeLength:self.sizeLength,
             sizeWidth:self.sizeWidth,
-            side:self.style,
+            style:self.style,
             number:self.number
         };
     }

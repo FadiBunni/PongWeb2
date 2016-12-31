@@ -20,8 +20,8 @@ var SOCKET_LIST = {};
 
 Player.list = {};
 
-Player.onConnect = function (socket) {
-    var player = Player(socket.id, "right");
+Player.onConnect = function (socket, side) {
+    var player = Player(socket.id, side);
     socket.on('keyPress',function(data){
         if(data.inputId === 'up')
             player.pressingUp = data.state;
@@ -60,8 +60,12 @@ Player.update = function(){
 io.sockets.on('connection', function(socket){
     socket.id = Math.random();
     SOCKET_LIST[socket.id] = socket;
-
-    Player.onConnect(socket);
+    console.log(Object.keys(SOCKET_LIST).length);
+    if(Object.keys(SOCKET_LIST).length == 1){
+        Player.onConnect(socket, "left");
+    }else if(Object.keys(SOCKET_LIST).length == 2) {
+        Player.onConnect(socket, "right");
+    }
 
     socket.on('disconnect',function(){
         delete SOCKET_LIST[socket.id];

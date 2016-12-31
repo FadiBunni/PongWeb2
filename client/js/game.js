@@ -39,7 +39,7 @@ setInterval(function(){
     ctx.fillStyle = "black";
     ctx.fillRect(0,0,w,h);
     for(var i in Player.list){
-        ctx.fillStyle = "red";
+        ctx.fillStyle = Player.list[i].style;
         ctx.fillRect(Player.list[i].x, Player.list[i].y, Player.list[i].sizeWidth, Player.list[i].sizeLength);
     }
 

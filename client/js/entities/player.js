@@ -6,6 +6,7 @@ var Player = function(initPack) {
 	self.y = initPack.y;
 	self.sizeLength = initPack.sizeLength;
 	self.sizeWidth = initPack.sizeWidth;
+	self.style = initPack.style;
 
 
 	// self.draw = function() {
