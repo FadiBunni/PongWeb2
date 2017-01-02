@@ -166,8 +166,6 @@ window.onload = function() {
 		ball.draw();
 		ball.update();
 
-
-
 		ctx.font = "16px Arial";
 		ctx.fillStyle = "white";
 		ctx.fillText("Player 1: " + score[0], 15, 35);

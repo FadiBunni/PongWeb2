@@ -9,9 +9,10 @@ var Player = function(initPack) {
 	self.style = initPack.style;
 
 
-	// self.draw = function() {
-	// 	ctx.fillText(self.number, self.x, self.y);
-	// }
+	self.draw = function(ctx) {
+		ctx.fillStyle = self.style;
+        ctx.fillRect(self.x, self.y, self.sizeWidth, self.sizeLength);
+	}
 
 	Player.list[self.id] = self;
 	return self;

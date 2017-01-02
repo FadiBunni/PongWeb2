@@ -11,10 +11,10 @@ var Player = function(id, side){
     self.sizeLength = 140;
     self.sizeWidth = 25;
     self.number = "" + Math.floor(10 * Math.random());
-
+    //create a list with constants and input them here - this is bad practice.
     var w = 600, h = 400;
 
-    if(self.style== "blue")
+    if(self.style == "blue")
         self.x = w - (self.sizeWidth + 20);
 
     var super_update = self.update;
@@ -33,7 +33,6 @@ var Player = function(id, side){
     }
 
     self.sideCollision = function() {
-        //create a list with constants and input them here - this is bad practice.
         if(self.y < 0 ){
             self.y = 0;
         }else if(self.y > h - self.sizeLength){

@@ -1,5 +1,6 @@
 var cUtils = require('./utils/utils.canvas.js');
 var Player = require('./entities/player.js');
+var Keys = require('./utils/utils.keys.js');
 
 var w = 600, h = 400;
 
@@ -10,12 +11,12 @@ var socket = io();
 
 Player.list = {};
 
+//communication with the server:
 socket.on('init', function(data){
     for(var i = 0; i < data.player.length; i++){
         new Player(data.player[i]);
     }
 });
-
 socket.on('update', function(data){
     for(var i = 0; i< data.player.length; i++){
         var pack = data.player[i];
@@ -34,27 +35,17 @@ socket.on('remove', function(data){
         delete Player.list[data.player[i]];
 });
 
+//draw entities and background
 setInterval(function(){
     ctx.clearRect(0,0,w,h);
     ctx.fillStyle = "black";
     ctx.fillRect(0,0,w,h);
     for(var i in Player.list){
-        ctx.fillStyle = Player.list[i].style;
-        ctx.fillRect(Player.list[i].x, Player.list[i].y, Player.list[i].sizeWidth, Player.list[i].sizeLength);
+        Player.list[i].draw(ctx);
     }
-
 },40);
 
-document.onkeydown = function(event){
-    if(event.keyCode === 83)   //s
-        socket.emit('keyPress',{inputId:'down',state:true});
-    else if(event.keyCode === 87) // w
-        socket.emit('keyPress',{inputId:'up',state:true});
 
-}
-document.onkeyup = function(event){
-    if(event.keyCode === 83)   //s
-        socket.emit('keyPress',{inputId:'down',state:false});
-    else if(event.keyCode === 87) // w
-        socket.emit('keyPress',{inputId:'up',state:false});
-}
+//Key handler!
+document.addEventListener('keydown', Keys.onkeydown);
+document.addEventListener('keyup', Keys.onkeyup);
