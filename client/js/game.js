@@ -6,8 +6,10 @@ var w = 600, h = 400;
 
 var canvas = cUtils.generateCanvas(w, h);
 var ctx = canvas.getContext('2d');
+var serverFull = document.getElementById('full');
 
 var socket = io();
+exports.socket = socket;
 
 Player.list = {};
 
@@ -33,6 +35,10 @@ socket.on('update', function(data){
 socket.on('remove', function(data){
     for(var i = 0; i < data.player.length; i++)
         delete Player.list[data.player[i]];
+});
+socket.on('serverIsFull', function(data){
+    serverFull.style.display = 'block';
+    serverFull.innerHTML = data;
 });
 
 //draw entities and background

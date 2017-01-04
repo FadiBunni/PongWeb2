@@ -29,8 +29,10 @@ var w = 600, h = 400;
 
 var canvas = cUtils.generateCanvas(w, h);
 var ctx = canvas.getContext('2d');
+var serverFull = document.getElementById('full');
 
 var socket = io();
+exports.socket = socket;
 
 Player.list = {};
 
@@ -56,6 +58,10 @@ socket.on('update', function(data){
 socket.on('remove', function(data){
     for(var i = 0; i < data.player.length; i++)
         delete Player.list[data.player[i]];
+});
+socket.on('serverIsFull', function(data){
+    serverFull.style.display = 'block';
+    serverFull.innerHTML = data;
 });
 
 //draw entities and background
@@ -125,21 +131,21 @@ module.exports = {
  * is pressed down at any given moment.
  * Returns getters for each key.
  */
-var socket = io();
+var game = require('../game.js');
 module.exports = {
 
     onkeydown: function(event){
         if(event.keyCode === 83)   //s
-            socket.emit('keyPress',{inputId:'down',state:true});
+            game.socket.emit('keyPress',{inputId:'down',state:true});
         else if(event.keyCode === 87) // w
-            socket.emit('keyPress',{inputId:'up',state:true});
+            game.socket.emit('keyPress',{inputId:'up',state:true});
     },
 
     onkeyup: function(event){
         if(event.keyCode === 83)   //s
-            socket.emit('keyPress',{inputId:'down',state:false});
+            game.socket.emit('keyPress',{inputId:'down',state:false});
         else if(event.keyCode === 87) // w
-            socket.emit('keyPress',{inputId:'up',state:false});
+            game.socket.emit('keyPress',{inputId:'up',state:false});
     }
 };
-},{}]},{},[2]);
+},{"../game.js":2}]},{},[2]);

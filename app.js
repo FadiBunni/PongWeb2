@@ -58,18 +58,25 @@ Player.update = function(){
 }
 
 io.sockets.on('connection', function(socket){
-    socket.id = Math.random();
+    if(Object.keys(SOCKET_LIST).length == 1){
+        socket.id = Math.random();
+    }
+    console.log("socket id:" + socket.id);
     SOCKET_LIST[socket.id] = socket;
-    console.log(Object.keys(SOCKET_LIST).length);
+    console.log("socket connections: " + Object.keys(SOCKET_LIST).length);
     if(Object.keys(SOCKET_LIST).length == 1){
         Player.onConnect(socket, "left");
     }else if(Object.keys(SOCKET_LIST).length == 2) {
         Player.onConnect(socket, "right");
+    }else if (Object.keys(SOCKET_LIST).length >= 3){
+        socket.emit("serverIsFull", "The game server is full for now.");
+        delete SOCKET_LIST[socket.id];
     }
 
     socket.on('disconnect',function(){
         delete SOCKET_LIST[socket.id];
         Player.onDisconnect(socket);
+       console.log("socket connections: " + Object.keys(SOCKET_LIST).length);
     });
 });
 var removePack = {player:[]};
