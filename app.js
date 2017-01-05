@@ -4,14 +4,13 @@ var app = express();
 var serv = require('http').Server(app);
 var io = require('socket.io')(serv,{});
 var Player = require('./server/js/entities/player.js');
-//var Entity = require('./server/js/entities/entity.js');
+//var Constants = require('./server/js/utils/server.constants.js');
 
 app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
 });
 
 app.use('/client', express.static(path.join(__dirname + '/client')));
-//app.use(express.static(path.join(__dirname, 'client')));
 
 serv.listen(2000);
 console.log("Server started.");
@@ -57,10 +56,8 @@ Player.update = function(){
     return pack;
 }
 
-io.sockets.on('connection', function(socket){
-    if(Object.keys(SOCKET_LIST).length == 1){
-        socket.id = Math.random();
-    }
+io.on('connection', function(socket){
+    socket.id = Math.random();
     console.log("socket id:" + socket.id);
     SOCKET_LIST[socket.id] = socket;
     console.log("socket connections: " + Object.keys(SOCKET_LIST).length);
@@ -70,7 +67,7 @@ io.sockets.on('connection', function(socket){
         Player.onConnect(socket, "right");
     }else if (Object.keys(SOCKET_LIST).length >= 3){
         socket.emit("serverIsFull", "The game server is full for now.");
-        delete SOCKET_LIST[socket.id];
+        delete SOCKET_LIST[2];
     }
 
     socket.on('disconnect',function(){

@@ -1,13 +1,16 @@
+//initializing "classes"
 var cUtils = require('./utils/utils.canvas.js');
-var Player = require('./entities/player.js');
 var Keys = require('./utils/utils.keys.js');
+var Constants = require('./utils/client.constants.js');
+var Player = require('./entities/player.js');
 
-var w = 600, h = 400;
-
+// Setting up canvas
+var w = Constants.w, h = Constants.h;
 var canvas = cUtils.generateCanvas(w, h);
 var ctx = canvas.getContext('2d');
 var serverFull = document.getElementById('full');
 
+//socket connection, and exporting for other files.
 var socket = io();
 exports.socket = socket;
 
@@ -19,11 +22,13 @@ socket.on('init', function(data){
         new Player(data.player[i]);
     }
 });
+
 socket.on('update', function(data){
     for(var i = 0; i< data.player.length; i++){
         var pack = data.player[i];
         var p = Player.list[pack.id];
         if(p){
+            // do I need x?
             if(p.x !== undefined)
                 p.x = pack.x;
             if(p.y !== undefined)

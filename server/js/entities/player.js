@@ -1,3 +1,4 @@
+var Constants = require('../utils/server.constants.js');
 var Entity = require('./entity.js');
 var Mainapp = require(require.main.filename);
 var Player = function(id, side){
@@ -11,8 +12,7 @@ var Player = function(id, side){
     self.sizeLength = 140;
     self.sizeWidth = 25;
     self.number = "" + Math.floor(10 * Math.random());
-    //create a list with constants and input them here - this is bad practice.
-    var w = 600, h = 400;
+    var w = Constants.w, h = Constants.h;
 
     if(self.style == "blue")
         self.x = w - (self.sizeWidth + 20);

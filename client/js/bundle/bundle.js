@@ -21,16 +21,19 @@ var Player = function(initPack) {
 
 module.exports = Player;
 },{}],2:[function(require,module,exports){
+//initializing "classes"
 var cUtils = require('./utils/utils.canvas.js');
-var Player = require('./entities/player.js');
 var Keys = require('./utils/utils.keys.js');
+var Constants = require('./utils/client.constants.js');
+var Player = require('./entities/player.js');
 
-var w = 600, h = 400;
-
+// Setting up canvas
+var w = Constants.w, h = Constants.h;
 var canvas = cUtils.generateCanvas(w, h);
 var ctx = canvas.getContext('2d');
 var serverFull = document.getElementById('full');
 
+//socket connection, and exporting for other files.
 var socket = io();
 exports.socket = socket;
 
@@ -42,11 +45,13 @@ socket.on('init', function(data){
         new Player(data.player[i]);
     }
 });
+
 socket.on('update', function(data){
     for(var i = 0; i< data.player.length; i++){
         var pack = data.player[i];
         var p = Player.list[pack.id];
         if(p){
+            // do I need x?
             if(p.x !== undefined)
                 p.x = pack.x;
             if(p.y !== undefined)
@@ -78,7 +83,13 @@ setInterval(function(){
 //Key handler!
 document.addEventListener('keydown', Keys.onkeydown);
 document.addEventListener('keyup', Keys.onkeyup);
-},{"./entities/player.js":1,"./utils/utils.canvas.js":3,"./utils/utils.keys.js":4}],3:[function(require,module,exports){
+},{"./entities/player.js":1,"./utils/client.constants.js":3,"./utils/utils.canvas.js":4,"./utils/utils.keys.js":5}],3:[function(require,module,exports){
+var constants = {
+    w:800,
+   	h:500
+}
+module.exports = constants;
+},{}],4:[function(require,module,exports){
 module.exports = {
 
 	getPixelRatio : function getPixelRatio(ctx) {
@@ -125,7 +136,7 @@ module.exports = {
 	  return canvas;
 	}
 };
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 /** keysDown Utility Module
  * Monitors and determines whether a key
  * is pressed down at any given moment.
