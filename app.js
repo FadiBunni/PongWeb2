@@ -4,6 +4,7 @@ var app = express();
 var serv = require('http').Server(app);
 var io = require('socket.io')(serv,{});
 var Player = require('./server/js/entities/player.js');
+var Ball = require('./server/js/entities/ball.js');
 //var Constants = require('./server/js/utils/server.constants.js');
 
 app.get('/', function(req, res) {
@@ -18,6 +19,7 @@ console.log("Server started.");
 var SOCKET_LIST = {};
 
 Player.list = {};
+Ball.list = {};
 
 Player.onConnect = function (socket, side) {
     var player = Player(socket.id, side);
@@ -56,6 +58,36 @@ Player.update = function(){
     return pack;
 }
 
+Ball.onConnect = function() {
+    var ball = Ball();
+
+    socket.emit('init', {
+        ball:Ball.getAllInitPack(),
+    });
+}
+
+Ball.getAllInitPack = function() {
+    var balls = [];
+    for(var i in Ball.list)
+        balls.push(Ball.list[i].getInitPack());
+    return balls;
+}
+
+Ball.onDisconnect = function() {
+    Ball.list = {}; 
+}
+
+Ball.update = function() {
+    var pack = [];
+    for(var i in Ball.list){
+        var ball = Ball.list[i];
+        ball.update();
+        ball.topCollision();
+        pack.push(ball.getUpdatePack());
+    }
+    return pack;
+}
+
 io.on('connection', function(socket){
     socket.id = Math.random();
     console.log("socket id:" + socket.id);
@@ -63,26 +95,31 @@ io.on('connection', function(socket){
     console.log("socket connections: " + Object.keys(SOCKET_LIST).length);
     if(Object.keys(SOCKET_LIST).length == 1){
         Player.onConnect(socket, "left");
+        Ball.onConnect();
     }else if(Object.keys(SOCKET_LIST).length == 2) {
         Player.onConnect(socket, "right");
     }else if (Object.keys(SOCKET_LIST).length >= 3){
         socket.emit("serverIsFull", "The game server is full for now.");
-        delete SOCKET_LIST[2];
+        delete SOCKET_LIST[3];
     }
 
     socket.on('disconnect',function(){
         delete SOCKET_LIST[socket.id];
         Player.onDisconnect(socket);
-       console.log("socket connections: " + Object.keys(SOCKET_LIST).length);
+        if(Object.keys(SOCKET_LIST).length == 0) {
+            Ball.onDisconnect();
+        }
+        console.log("socket connections: " + Object.keys(SOCKET_LIST).length);
     });
 });
-var removePack = {player:[]};
-var initPack = {player:[]};
+var removePack = {player:[],ball:[]};
+var initPack = {player:[],ball:[]};
 exports.initPack = initPack;
 
 setInterval(function(){
     var pack = {
-        player:Player.update()
+        player:Player.update(),
+        ball:Ball.update()
     }
 
     for(var i in SOCKET_LIST){
@@ -93,4 +130,6 @@ setInterval(function(){
     }
     initPack.player = [];
     removePack.player = [];
+    initPack.ball = [];
+    removePack.ball = [];
 },1000/100);

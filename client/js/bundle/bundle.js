@@ -1,4 +1,27 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var Ball = function(initPack) {
+	var self = {};
+	self.x = initPack.x;
+	self.y = initPack.y;
+	self.style = initPack.style;
+	self.size = initPack.size;
+
+
+	self.draw = function(ctx) {
+        ctx.beginPath();
+		ctx.fillStyle = self.style;
+		ctx.arc(self.x, self.y, self.size, 0, Math.PI * 2);
+		ctx.fill();
+	}
+
+	Ball.list[self.id] = self;
+	return self;
+}
+
+module.exports = Ball;
+
+
+},{}],2:[function(require,module,exports){
 var Player = function(initPack) {
 	var self = {};
 	self.id = initPack.id;
@@ -20,12 +43,13 @@ var Player = function(initPack) {
 }
 
 module.exports = Player;
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 //initializing "classes"
 var cUtils = require('./utils/utils.canvas.js');
 var Keys = require('./utils/utils.keys.js');
 var Constants = require('./utils/client.constants.js');
 var Player = require('./entities/player.js');
+var Ball = require('./entities/ball.js');
 
 // Setting up canvas
 var w = Constants.w, h = Constants.h;
@@ -38,11 +62,15 @@ var socket = io();
 exports.socket = socket;
 
 Player.list = {};
+Ball.list = {};
 
 //communication with the server:
 socket.on('init', function(data){
     for(var i = 0; i < data.player.length; i++){
         new Player(data.player[i]);
+    }
+    for(var i = 0; i < data.ball.length; i++){
+        new Ball(data.ball[i]);
     }
 });
 
@@ -58,12 +86,27 @@ socket.on('update', function(data){
                 p.y = pack.y;
         }
     }
+
+    for(var i = 0; i< data.ball.length; i++){
+        var pack = data.ball[i];
+        var p = Ball.list[pack];
+        if(p){
+            // do I need x?
+            if(p.x !== undefined)
+                p.x = pack.x;
+            if(p.y !== undefined)
+                p.y = pack.y;
+        }
+    }
 });
 
 socket.on('remove', function(data){
     for(var i = 0; i < data.player.length; i++)
         delete Player.list[data.player[i]];
+    for(var i = 0; i < data.ball.length; i++)
+        delete Ball.list[data.ball[i]];
 });
+
 socket.on('serverIsFull', function(data){
     serverFull.style.display = 'block';
     serverFull.innerHTML = data;
@@ -74,22 +117,23 @@ setInterval(function(){
     ctx.clearRect(0,0,w,h);
     ctx.fillStyle = "black";
     ctx.fillRect(0,0,w,h);
-    for(var i in Player.list){
+    for(var i in Player.list)
         Player.list[i].draw(ctx);
-    }
+    for(var i in Ball.list)
+        Ball.list[i].draw(ctx);
 },40);
 
 
 //Key handler!
 document.addEventListener('keydown', Keys.onkeydown);
 document.addEventListener('keyup', Keys.onkeyup);
-},{"./entities/player.js":1,"./utils/client.constants.js":3,"./utils/utils.canvas.js":4,"./utils/utils.keys.js":5}],3:[function(require,module,exports){
+},{"./entities/ball.js":1,"./entities/player.js":2,"./utils/client.constants.js":4,"./utils/utils.canvas.js":5,"./utils/utils.keys.js":6}],4:[function(require,module,exports){
 var constants = {
     w:800,
    	h:500
 }
 module.exports = constants;
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 module.exports = {
 
 	getPixelRatio : function getPixelRatio(ctx) {
@@ -136,7 +180,7 @@ module.exports = {
 	  return canvas;
 	}
 };
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /** keysDown Utility Module
  * Monitors and determines whether a key
  * is pressed down at any given moment.
@@ -159,4 +203,4 @@ module.exports = {
             game.socket.emit('keyPress',{inputId:'up',state:false});
     }
 };
-},{"../game.js":2}]},{},[2]);
+},{"../game.js":3}]},{},[3]);

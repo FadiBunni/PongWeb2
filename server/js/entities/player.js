@@ -18,7 +18,7 @@ var Player = function(id, side){
         self.x = w - (self.sizeWidth + 20);
 
     var super_update = self.update;
-    self.update= function() {
+    self.update = function() {
         self.updateSpd();
         super_update();
     }
