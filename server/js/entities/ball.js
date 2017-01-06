@@ -14,14 +14,14 @@ var Ball = function() {
 
 	var super_update = self.update;
     self.update= function() {
-        //self.updatePosition();
+        self.updatePosition();
         super_update();
     }
 
-  //   self.updatePosition = function(){
-  //       self.x += this.spdX;
-		// self.y += this.spdY;
-  //   }
+    self.updatePosition = function(){
+        self.x += self.spdX;
+        self.y += self.spdY;
+    }
 
     self.topCollision = function() {
     	if(this.y < 0){
@@ -45,7 +45,7 @@ var Ball = function() {
             x:self.x,
             y:self.y,
             style:self.style,
-            size:self.size,
+            size:self.size
         };
     }
 
@@ -60,8 +60,8 @@ var Ball = function() {
     Ball.list[self.id] = self;
 
     var initPack = Mainapp.initPack;
-    initPack.player.push(self.getInitPack());
-
+    initPack.ball.push(self.getInitPack());
+    console.log(initPack);
     return self;
 }
 

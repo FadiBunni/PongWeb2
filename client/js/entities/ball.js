@@ -1,10 +1,10 @@
 var Ball = function(initPack) {
 	var self = {};
+	self.x = initPack.id;
 	self.x = initPack.x;
 	self.y = initPack.y;
 	self.style = initPack.style;
 	self.size = initPack.size;
-
 
 	self.draw = function(ctx) {
         ctx.beginPath();

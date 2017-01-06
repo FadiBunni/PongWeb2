@@ -23,6 +23,8 @@ socket.on('init', function(data){
     for(var i = 0; i < data.player.length; i++){
         new Player(data.player[i]);
     }
+    console.log(data.player);
+    console.log(data.ball);
     for(var i = 0; i < data.ball.length; i++){
         new Ball(data.ball[i]);
     }
@@ -34,22 +36,21 @@ socket.on('update', function(data){
         var p = Player.list[pack.id];
         if(p){
             // do I need x?
-            if(p.x !== undefined)
+            if(pack.x !== undefined)
                 p.x = pack.x;
-            if(p.y !== undefined)
+            if(pack.y !== undefined)
                 p.y = pack.y;
         }
     }
 
     for(var i = 0; i< data.ball.length; i++){
         var pack = data.ball[i];
-        var p = Ball.list[pack];
-        if(p){
-            // do I need x?
-            if(p.x !== undefined)
-                p.x = pack.x;
-            if(p.y !== undefined)
-                p.y = pack.y;
+        var b = Ball.list[pack];
+        if(b){
+            if(pack.x !== undefined)
+                b.x = pack.x;
+            if(pack.y !== undefined)
+                b.y = pack.y;
         }
     }
 });

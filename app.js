@@ -32,6 +32,7 @@ Player.onConnect = function (socket, side) {
 
     socket.emit('init',{
         player:Player.getAllInitPack(),
+        ball:[],
     });
 }
 
@@ -58,11 +59,11 @@ Player.update = function(){
     return pack;
 }
 
-Ball.onConnect = function() {
+Ball.onConnect = function(socket) {
     var ball = Ball();
-
-    socket.emit('init', {
+    socket.emit('init',{
         ball:Ball.getAllInitPack(),
+        player:[]
     });
 }
 
@@ -74,7 +75,7 @@ Ball.getAllInitPack = function() {
 }
 
 Ball.onDisconnect = function() {
-    Ball.list = {}; 
+    removePack.ball.push(ball.id);
 }
 
 Ball.update = function() {
@@ -90,38 +91,44 @@ Ball.update = function() {
 
 io.on('connection', function(socket){
     socket.id = Math.random();
+
     console.log("socket id:" + socket.id);
+
     SOCKET_LIST[socket.id] = socket;
+
     console.log("socket connections: " + Object.keys(SOCKET_LIST).length);
+
     if(Object.keys(SOCKET_LIST).length == 1){
         Player.onConnect(socket, "left");
-        Ball.onConnect();
     }else if(Object.keys(SOCKET_LIST).length == 2) {
         Player.onConnect(socket, "right");
+        Ball.onConnect(socket);
     }else if (Object.keys(SOCKET_LIST).length >= 3){
         socket.emit("serverIsFull", "The game server is full for now.");
-        delete SOCKET_LIST[3];
+        // delete SOCKET_LIST[3];
     }
 
     socket.on('disconnect',function(){
         delete SOCKET_LIST[socket.id];
         Player.onDisconnect(socket);
-        if(Object.keys(SOCKET_LIST).length == 0) {
-            Ball.onDisconnect();
-        }
+        // if(Object.keys(SOCKET_LIST).length == 0) {
+        //     Ball.onDisconnect();
+        // }
         console.log("socket connections: " + Object.keys(SOCKET_LIST).length);
     });
 });
-var removePack = {player:[],ball:[]};
+
 var initPack = {player:[],ball:[]};
 exports.initPack = initPack;
+var removePack = {player:[],ball:[]};
 
 setInterval(function(){
     var pack = {
         player:Player.update(),
-        ball:Ball.update()
+        ball:Ball.update(),
     }
-
+    //console.log(Player.update());
+    //console.log(Ball.update());
     for(var i in SOCKET_LIST){
         var socket = SOCKET_LIST[i];
         socket.emit('init',initPack);
@@ -129,7 +136,7 @@ setInterval(function(){
         socket.emit('remove',removePack);
     }
     initPack.player = [];
-    removePack.player = [];
     initPack.ball = [];
+    removePack.player = [];
     removePack.ball = [];
-},1000/100);
+},1000/45);

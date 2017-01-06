@@ -11,7 +11,6 @@ var Player = function(id, side){
     self.style = side == "left" ? "red" : "blue";
     self.sizeLength = 140;
     self.sizeWidth = 25;
-    self.number = "" + Math.floor(10 * Math.random());
     var w = Constants.w, h = Constants.h;
 
     if(self.style == "blue")
@@ -48,7 +47,6 @@ var Player = function(id, side){
             sizeLength:self.sizeLength,
             sizeWidth:self.sizeWidth,
             style:self.style,
-            number:self.number
         };
     }
 
@@ -64,7 +62,6 @@ var Player = function(id, side){
 
     var initPack = Mainapp.initPack;
     initPack.player.push(self.getInitPack());
-
     return self;
 }
 
