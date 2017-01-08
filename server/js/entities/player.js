@@ -20,6 +20,7 @@ var Player = function(id, side){
     self.update = function() {
         self.updateSpd();
         super_update();
+        self.sideCollision();
     }
 
     self.updateSpd = function(){
@@ -46,14 +47,13 @@ var Player = function(id, side){
             y:self.y,
             sizeLength:self.sizeLength,
             sizeWidth:self.sizeWidth,
-            style:self.style,
+            style:self.style
         };
     }
 
     self.getUpdatePack = function() {
         return {
             id:self.id,
-            x:self.x,
             y:self.y
         };
     }

@@ -1,7 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var Ball = function(initPack) {
 	var self = {};
-	self.x = initPack.id;
+	self.id = initPack.id;
 	self.x = initPack.x;
 	self.y = initPack.y;
 	self.style = initPack.style;
@@ -68,7 +68,6 @@ socket.on('init', function(data){
         new Player(data.player[i]);
     }
     console.log(data.player);
-    console.log(data.ball);
     for(var i = 0; i < data.ball.length; i++){
         new Ball(data.ball[i]);
     }
@@ -89,7 +88,7 @@ socket.on('update', function(data){
 
     for(var i = 0; i< data.ball.length; i++){
         var pack = data.ball[i];
-        var b = Ball.list[pack];
+        var b = Ball.list[pack.id];
         if(b){
             if(pack.x !== undefined)
                 b.x = pack.x;
@@ -120,7 +119,7 @@ setInterval(function(){
         Player.list[i].draw(ctx);
     for(var i in Ball.list)
         Ball.list[i].draw(ctx);
-},40);
+},20);
 
 
 //Key handler!

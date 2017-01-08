@@ -53,14 +53,13 @@ Player.update = function(){
     for(var i in Player.list){
         var player = Player.list[i];
         player.update();
-        player.sideCollision();
         pack.push(player.getUpdatePack());
     }
     return pack;
 }
 
-Ball.onConnect = function(socket) {
-    var ball = Ball();
+Ball.onConnect = function(players, socket) {
+    var ball = Ball(players);
     socket.emit('init',{
         ball:Ball.getAllInitPack(),
         player:[]
@@ -82,42 +81,38 @@ Ball.update = function() {
     var pack = [];
     for(var i in Ball.list){
         var ball = Ball.list[i];
-        ball.update();
-        ball.topCollision();
-        pack.push(ball.getUpdatePack());
+        if(Object.keys(SOCKET_LIST).length === 2){
+            ball.update();
+            pack.push(ball.getUpdatePack());
+        }
     }
     return pack;
 }
 
 io.on('connection', function(socket){
     socket.id = Math.random();
-
     console.log("socket id:" + socket.id);
 
     SOCKET_LIST[socket.id] = socket;
-
     console.log("socket connections: " + Object.keys(SOCKET_LIST).length);
 
     if(Object.keys(SOCKET_LIST).length == 1){
         Player.onConnect(socket, "left");
     }else if(Object.keys(SOCKET_LIST).length == 2) {
         Player.onConnect(socket, "right");
-        Ball.onConnect(socket);
+        Ball.onConnect(Player.list, socket);
     }else if (Object.keys(SOCKET_LIST).length >= 3){
         socket.emit("serverIsFull", "The game server is full for now.");
-        // delete SOCKET_LIST[3];
+        delete SOCKET_LIST[socket.id];
+        Player.onDisconnect(socket);
     }
 
     socket.on('disconnect',function(){
         delete SOCKET_LIST[socket.id];
         Player.onDisconnect(socket);
-        // if(Object.keys(SOCKET_LIST).length == 0) {
-        //     Ball.onDisconnect();
-        // }
         console.log("socket connections: " + Object.keys(SOCKET_LIST).length);
     });
 });
-
 var initPack = {player:[],ball:[]};
 exports.initPack = initPack;
 var removePack = {player:[],ball:[]};
@@ -127,8 +122,6 @@ setInterval(function(){
         player:Player.update(),
         ball:Ball.update(),
     }
-    //console.log(Player.update());
-    //console.log(Ball.update());
     for(var i in SOCKET_LIST){
         var socket = SOCKET_LIST[i];
         socket.emit('init',initPack);
@@ -139,4 +132,4 @@ setInterval(function(){
     initPack.ball = [];
     removePack.player = [];
     removePack.ball = [];
-},1000/45);
+},1000/60);

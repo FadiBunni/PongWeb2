@@ -1,6 +1,6 @@
 var Ball = function(initPack) {
 	var self = {};
-	self.x = initPack.id;
+	self.id = initPack.id;
 	self.x = initPack.x;
 	self.y = initPack.y;
 	self.style = initPack.style;
