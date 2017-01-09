@@ -1,10 +1,10 @@
-var path = require('path');
 var express = require('express');
-var app = express();
-var serv = require('http').Server(app);
-var io = require('socket.io')(serv,{});
-var Player = require('./server/js/entities/player.js');
-var Ball = require('./server/js/entities/ball.js');
+var app     = express();
+var http    = require('http').Server(app);
+var io      = require('socket.io')(http);
+var path    = require('path');
+var Player  = require('./server/js/entities/player.js');
+var Ball    = require('./server/js/entities/ball.js');
 //var Constants = require('./server/js/utils/server.constants.js');
 
 app.get('/', function(req, res) {
@@ -13,8 +13,11 @@ app.get('/', function(req, res) {
 
 app.use('/client', express.static(path.join(__dirname + '/client')));
 
-serv.listen(2000);
-console.log("Server started.");
+var port = process.env.PORT || 2000;
+http.listen(port, function(){
+    console.log("Server started: http://localhost:2000/");
+});
+
 
 var SOCKET_LIST = {};
 
