@@ -13,7 +13,6 @@ var serverFull = document.getElementById('full');
 
 //socket connection, and exporting for other files.
 var socket = io();
-exports.socket = socket;
 
 Player.list = {};
 Ball.list = {};
@@ -79,5 +78,5 @@ setInterval(function(){
 
 
 //Key handler!
-document.addEventListener('keydown', Keys.onkeydown);
-document.addEventListener('keyup', Keys.onkeyup);
+document.addEventListener('keydown', Keys(socket).onkeydown());
+document.addEventListener('keyup', Keys(socket).onkeyup());

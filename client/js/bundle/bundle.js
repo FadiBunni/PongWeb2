@@ -57,7 +57,6 @@ var serverFull = document.getElementById('full');
 
 //socket connection, and exporting for other files.
 var socket = io();
-exports.socket = socket;
 
 Player.list = {};
 Ball.list = {};
@@ -123,8 +122,8 @@ setInterval(function(){
 
 
 //Key handler!
-document.addEventListener('keydown', Keys.onkeydown);
-document.addEventListener('keyup', Keys.onkeyup);
+document.addEventListener('keydown', Keys(socket).onkeydown());
+document.addEventListener('keyup', Keys(socket).onkeyup());
 },{"./entities/ball.js":1,"./entities/player.js":2,"./utils/client.constants.js":4,"./utils/utils.canvas.js":5,"./utils/utils.keys.js":6}],4:[function(require,module,exports){
 var constants = {
     w:800,
@@ -185,20 +184,21 @@ module.exports = {
  * Returns getters for each key.
  */
 var game = require('../game.js');
-module.exports = {
-
-    onkeydown: function(event){
+var Keys = function(socket){
+    onkeydown = function(event){
         if(event.keyCode === 83)   //s
-            game.socket.emit('keyPress',{inputId:'down',state:true});
+            socket.emit('keyPress',{inputId:'down',state:true});
         else if(event.keyCode === 87) // w
-            game.socket.emit('keyPress',{inputId:'up',state:true});
+            socket.emit('keyPress',{inputId:'up',state:true});
     },
 
-    onkeyup: function(event){
+    onkeyup = function(event){
         if(event.keyCode === 83)   //s
-            game.socket.emit('keyPress',{inputId:'down',state:false});
+            socket.emit('keyPress',{inputId:'down',state:false});
         else if(event.keyCode === 87) // w
-            game.socket.emit('keyPress',{inputId:'up',state:false});
+            socket.emit('keyPress',{inputId:'up',state:false});
     }
 };
+
+module.exports = Keys;
 },{"../game.js":3}]},{},[3]);
