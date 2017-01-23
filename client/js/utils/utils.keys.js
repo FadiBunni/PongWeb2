@@ -1,9 +1,3 @@
-/** keysDown Utility Module
- * Monitors and determines whether a key
- * is pressed down at any given moment.
- * Returns getters for each key.
- */
-var game = require('../game.js');
 var Keys = function(socket){
     onkeydown = function(event){
         if(event.keyCode === 83)   //s

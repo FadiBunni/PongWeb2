@@ -5,7 +5,6 @@ var io      = require('socket.io')(http);
 var path    = require('path');
 var Player  = require('./server/js/entities/player.js');
 var Ball    = require('./server/js/entities/ball.js');
-//var Constants = require('./server/js/utils/server.constants.js');
 
 app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
