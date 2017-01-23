@@ -135,3 +135,4 @@ setInterval(function(){
     removePack.player = [];
     removePack.ball = [];
 },1000/60);
+
