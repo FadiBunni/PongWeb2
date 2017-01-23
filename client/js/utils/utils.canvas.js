@@ -25,7 +25,7 @@ module.exports = {
 	  return deviceRatio / backingRatio;
 	},
 
-	generateCanvas : function generateCanvas(w, h) {
+	generateCanvas: function generateCanvas(w, h) {
 	  console.log('Generating canvas.');
 
 	  var canvas = document.getElementById('canvas');

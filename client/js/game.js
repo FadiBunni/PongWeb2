@@ -5,6 +5,8 @@ var Constants = require('./utils/client.constants.js');
 var Player = require('./entities/player.js');
 var Ball = require('./entities/ball.js');
 
+
+
 // Setting up canvas
 var w = Constants.w, h = Constants.h;
 var canvas = cUtils.generateCanvas(w, h);
